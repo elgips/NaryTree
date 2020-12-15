@@ -40,8 +40,11 @@ using namespace std;
 int main(){
 	node<int> x1(1),x2(2);
 	x1.appendChild(3);
-	node<string> y("1");
-	y.appendChild(&y);
+	node<string> y1("1"),y2("1"),y3("tot");
+	y1.appendChild(&y3, &y2);
+	y1.appendChild(&y2,&y1);
+	y1.topToBottom2Text("../nodeTree/OU.txt");
+//	y.appendChild(&y,&y);
 //	vector<node<int>> z;
 
 	cout<< "too slow";

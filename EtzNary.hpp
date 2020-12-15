@@ -27,10 +27,12 @@ public:
 	bool notMyPapa(node* _leaf,node* _branch){
 		node* ancestor=_branch;
 		bool fatherLikeSon=false;
-		while(ancestor!=NULL){
+		while(ancestor!=0x0){
 			fatherLikeSon=(fatherLikeSon||(_leaf==ancestor));
+			if(fatherLikeSon)return !fatherLikeSon;
+			ancestor=ancestor->parent;
 		}
-		return fatherLikeSon;
+		return !fatherLikeSon;
 	}
 	node(){
 		children.clear();
@@ -66,29 +68,40 @@ public:
 	}
 	void appendChild(node* _child){
 		if(notMyPapa(_child, this)){
-		_child->parent=this;
-		this->children.push_back(_child);}
+			_child->parent=this;
+			this->children.push_back(_child);}
 		else{
 			invalid_argument("there is a loop in the tree");
 			terminate();
-			}
 		}
+	}
+	void appendChild(node* _child,node* _parent){
+		if(notMyPapa(_child, _parent)){
+			_child->parent=_parent;
+			_parent->children.push_back(_child);}
+		else{
+			invalid_argument("there is a loop in the tree");
+			terminate();
+		}
+	}
 	void TreePrintAux(node* _child,ofstream* out){
-		if(!children.empty()){
+		*out<<endl;
+		*out<<_child->value;
+		if(!_child->children.empty()){
 			typename vector<node<T>*>::iterator it;
-			*out<<_child->value;
-			for(it=children.begin();it!=children.end();it++){
-				TreePrintAux(it);
+			for(it=_child->children.begin();it!=_child->children.end();it++){
+				TreePrintAux(*it,out);
 			}
 		}
 	}
 	void topToBottom2Text(string _fileName){
-		ofstream out(_fileName);
+		ofstream out( _fileName.c_str(), ios::out );
 		out<<this->value;
 		if(!children.empty()){
 			typename vector<node<T>*>::iterator it;
 			for(it=children.begin();it!=children.end();it++){
-				TreePrintAux(it,&out);
+				TreePrintAux(*it,&out);
+
 			}
 		}
 		out.close();
