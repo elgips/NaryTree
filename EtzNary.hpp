@@ -55,7 +55,7 @@ public:
 		parent=NULL;
 	}
 	node(T _value){
-		value=new T*;
+		value=new T;
 		*value=_value;
 		children.clear();
 		parent=NULL;
