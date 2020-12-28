@@ -266,9 +266,9 @@ public:
 		StreamLine3D StLn(pE,pH,pL,pU);
 		return StLn;
 	}
-	StreamLine3D rotateStream(StreamLine3D *_s,double _M[3][3]){//_M is symmetric rotation matrix
+	StreamLine3D rotateStream(double _M[3][3]){//_M is symmetric rotation matrix
 
-		StreamLine3D SL3D(pI.MatrixRotate(_M),_s->pH.MatrixRotate(_M),_s->pL.MatrixRotate(_M),_s->pU.MatrixRotate(_M));
+		StreamLine3D SL3D(pI.MatrixRotate(_M),pH.MatrixRotate(_M),pL.MatrixRotate(_M),pU.MatrixRotate(_M));
 		if(*pE!=0x0){
 			SL3D.pE=pE.MatrixRotate(_M);
 		}
@@ -295,8 +295,31 @@ public:
 		points=_ps;
 		streams=&(new node<StreamLine3D>(&StreamLine3D(*points->value)));
 	}
-	void rotateStreams(double _M[3][3]){
-
+	void rotateStreams(node<point3D>* _pP,node<StreamLine3D>* _pS,node<StreamLine3D>* _nS,double _M[3][3]){
+		node<point3D>* nPR;
+		node<StreamLine3D>* nSR;
+		nPR->parent=_pP;
+		nSR->parent=_pS;
+		nSR->value=_nS->value->rotateStream(_M);
+		nPR->value=nSR->value->pI;
+		if(!_nS->children.empty()){
+			typename vector<node<StreamLine3D>*>::iterator it;
+			for(it=_nS->children.begin();it!=_nS->children.end();it++){
+				rotateStreams(nPR,nSR,*it,_M);
+			}
+		}
+	}
+	node<point3D>* rotatePoints(node<point3D>* _p,node<point3D>* _n,double _M[3][3]){ //not fit to Strems rotations - points to streams refs lost
+		node<point3D>* nR;
+		nR->parent=_p;
+		nR->value=_n->value->MatrixRotate(_M);
+		if(!_n->children.empty()){
+			typename vector<node<point3D>*>::iterator it;
+			for(it=_n->children.begin();it!=_n->children.end();it++){
+				nR->children.push_back(rotatePoints(nR,*it,_M));
+			}
+		}
+		return nR;
 	}
 	static node<StreamLine3D>* getStreamNodeFromPointNodeVal(point3D* _p,node<StreamLine3D>* _s){
 		node<StreamLine3D>* nSL3D=_s;
@@ -308,6 +331,7 @@ public:
 			it=_s->children.begin();
 			while((nSL3D==NULL)&&(it!=_s->children.end())){
 				nSL3D=getStreamNodeFromPointNodeVal(_p,*it);
+				it++;
 			}
 		}
 		return nSL3D;
@@ -330,7 +354,12 @@ public:
 		}
 		return subTree;
 	}
-	void mountSubTreeAtPoint(StreamTree3D* ST3D,node<point3D>* _n)
+	void mountSubTreeAtPoint(StreamTree3D* ST3D,node<point3D>* _n){
+		node<StreamLine3D> *Temp;
+		Temp=getStreamNodeFromPointNodeVal(_n->value,this->streams);
+		double M[3][3]={{Temp->value->pH.x,Temp->value->pH.y,Temp->value->pH.z},{Temp->value->pL.x,Temp->value->pL.y,Temp->value->pL.z},{Temp->value->pU.x,Temp->value->pU.y,Temp->value->pU.z}};
+		rotateStreams(_n->parent,Temp->parent,ST3D->streams,M);
+	}
 
 };
 //void auxString2VerTree(node<point3D> _n,string* _s,size_t* _t){
