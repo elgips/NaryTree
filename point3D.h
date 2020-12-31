@@ -5,8 +5,8 @@
  *      Author: gips
  */
 
-#ifndef SRC_POINT3D_H_
-#define SRC_POINT3D_H_
+#ifndef POINT3D_H_
+#define POINT3D_H_
 #include <vector>
 #include <string.h>
 #include <iostream>
@@ -37,4 +37,4 @@ public:
 
 
 
-#endif /* SRC_POINT3D_H_ */
+#endif /* POINT3D_H_ */

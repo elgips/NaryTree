@@ -5,8 +5,8 @@
  *      Author: gips
  */
 
-#ifndef SRC_STREAMLINE3D_H_
-#define SRC_STREAMLINE3D_H_
+#ifndef STREAMLINE3D_H_
+#define STREAMLINE3D_H_
 #include"point3D.h"
 //using namespace std;
 class streamLine3D{
@@ -32,4 +32,4 @@ public:
 
 
 
-#endif /* SRC_STREAMLINE3D_H_ */
+#endif /* STREAMLINE3D_H_ */
