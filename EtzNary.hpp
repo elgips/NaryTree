@@ -85,12 +85,14 @@ public:
 	}
 	//	node<T> node::newNode(T _value);
 	void appendChild(T _value){
-		node temp(_value,this);
-		this->children.push_back(&temp);
+		node temp(_value,this),*t;
+		t=&temp;
+		this->children.push_back(t);
 	}
 	void appendChild(T* _value){
-		node temp(_value,this);
-		this->children.push_back(&temp);
+		node temp(_value,this),*t;
+		t=&temp;
+		this->children.push_back(t);
 	}
 	void appendChild(node* _child){
 		if(notMyPapa(_child, this)){
@@ -101,12 +103,12 @@ public:
 			terminate();
 		}
 	}
-	void appendChildren(vector<node*> _c){
+	void appendChildren(node * _p,vector<node*> _c){
 		typename vector<node<T>*>::iterator it;
 		for(it=_c.begin();it!=_c.end();it++){
 			if(notMyPapa(*it, this)){
-				*it->parent=this;
-				this->children.push_back(*it);}
+				it->parent=_p;
+				_p->children.push_back(*it);}
 			else{
 				invalid_argument("there is a loop in the tree");
 				terminate();
@@ -144,16 +146,41 @@ public:
 		}
 		out.close();
 	}
-	bool isMember(node* _n){
-		bool x=false;
-		x=x||*this=_n;
+	bool isMember(node* _r,node* _n){
+		bool x=false;;
+		x=+(_r==_n);
 		if(!this->children.empty()){
 			typename vector<node<T>*>::iterator it;
 			for(it=children.begin();it!=children.end();it++){
-				x=x||isMember(it);
+				x=x||isMember(*it,_n);
 			}
 		}
 		return x;
+	}
+	void copySubTreeAux(node* _root,node* _parent){
+		node n,*n_a;
+		n_a=&n;
+		_parent->appendChild(n_a);
+		T value=*(_root->value);
+		T *value_a=&value;
+		n.value=value_a;
+		typename vector<node<T>*>::iterator it;
+		for(it=_root->children.begin();it!=_root->children.end();it++){
+			copySubTreeAux((*it),n_a);
+		}
+	}
+	node copySubTree(node* _root){
+		node n,*n_a;
+		n_a=&n;
+		n.parent=NULL;
+		T value=*(_root->value);
+		T *value_a=&value;
+		n.value=value_a;
+		typename vector<node<T>*>::iterator it;
+		for(it=_root->children.begin();it!=_root->children.end();it++){
+			copySubTreeAux((*it),n_a);
+		}
+		return n;
 	}
 };
 
