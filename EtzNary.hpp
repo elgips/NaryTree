@@ -21,108 +21,47 @@ using namespace std;
 template <typename T>
 class node{
 public:
-	T* 				 value;
-	vector<node*> children;
+	T 				value;
+	vector<node*> 	children;
 	node* 			parent;
-	bool notMyPapa(node* _leaf,node* _branch){
-		node* ancestor=_branch;
+
+	static node* newNode(T _value,node* _parent){
+		node* temp=new node;
+		temp->value=_value;
+		temp->parent=_parent;
+		return temp;
+	}
+	static void appendChild(node* _parent,node* _child){
+		if(notMyPapa(_parent, _child)){
+			_child->parent=_parent;
+			_parent->children.push_back(_child);
+		}
+		else{
+			invalid_argument("there is a loop in the tree");
+			terminate();
+		}
+	}
+	static bool notMyPapa(node* _parent,node* _child){
+		node* ancestor=_parent;
 		bool fatherLikeSon=false;
 		while(ancestor!=0x0){
-			fatherLikeSon=(fatherLikeSon||(_leaf==ancestor));
+			fatherLikeSon=(fatherLikeSon||(_child==ancestor));
 			if(fatherLikeSon)return !fatherLikeSon;
 			ancestor=ancestor->parent;
 		}
 		return !fatherLikeSon;
 	}
-	node(){
-		value=NULL;
-		children.clear();
-		parent=NULL;
-	}
-
-	node(node* _parent){
-		value=NULL;
-		if(notMyPapa(this, _parent)){
-			children.clear();
-			parent=_parent;}
-		else{
-			invalid_argument("there is a loop in the tree");
-			terminate();
-		}}
-	node(T* _value){
-		value=_value;
-		children.clear();
-		parent=NULL;
-	}
-	node(T _value){
-		value=new T;
-		*value=_value;
-		children.clear();
-		parent=NULL;
-	}
-
-
-	node(T* _value,node* _parent){
-		if(notMyPapa(this, _parent)){
-			value=_value;
-			children.clear();
-			parent=_parent;}
-		else{
-			invalid_argument("there is a loop in the tree");
-			terminate();
-		}
-	}
-	node(T _value,node* _parent){
-		if(notMyPapa(this, _parent)){
-			value=new T;
-			*value=_value;
-			children.clear();
-			parent=_parent;}
-		else{
-			invalid_argument("there is a loop in the tree");
-			terminate();
-		}
-	}
-	//	node<T> node::newNode(T _value);
-	void appendChild(T _value){
-		node temp(_value,this),*t;
-		t=&temp;
-		this->children.push_back(t);
-	}
-	void appendChild(T* _value){
-		node temp(_value,this),*t;
-		t=&temp;
-		this->children.push_back(t);
-	}
-	void appendChild(node* _child){
-		if(notMyPapa(_child, this)){
-			_child->parent=this;
-			this->children.push_back(_child);}
-		else{
-			invalid_argument("there is a loop in the tree");
-			terminate();
-		}
-	}
-	void appendChildren(node * _p,vector<node*> _c){
+	static bool isMember(node* _parent,node* _child){
+		bool x=(_parent==_child);
 		typename vector<node<T>*>::iterator it;
-		for(it=_c.begin();it!=_c.end();it++){
-			if(notMyPapa(*it, this)){
-				it->parent=_p;
-				_p->children.push_back(*it);}
-			else{
-				invalid_argument("there is a loop in the tree");
-				terminate();
+		if(x){
+			if(!_parent->children.empty()){
+				for(it=_parent->children.begin();(it!=_parent->children.end())&&(!x);it++){
+					x=+isMember(*it,_child);
+				}
 			}
 		}
-	}
-	void appendChild(node* _child,node* _parent){
-		if(notMyPapa(_child, _parent)){
-			_child->parent=_parent;
-			_parent->children.push_back(_child);}
-		else{
-			invalid_argument("there is a loop in the tree");
-			terminate();
-		}
+		return x;
 	}
 	void TreePrintAux(node* _child,ofstream* out){
 		*out<<endl;
@@ -141,46 +80,38 @@ public:
 			typename vector<node<T>*>::iterator it;
 			for(it=children.begin();it!=children.end();it++){
 				TreePrintAux(*it,&out);
-
 			}
 		}
 		out.close();
 	}
-	bool isMember(node* _r,node* _n){
-		bool x=false;;
-		x=+(_r==_n);
-		if(!this->children.empty()){
-			typename vector<node<T>*>::iterator it;
-			for(it=children.begin();it!=children.end();it++){
-				x=x||isMember(*it,_n);
-			}
-		}
-		return x;
-	}
-	void copySubTreeAux(node* _root,node* _parent){
-		node n,*n_a;
-		n_a=&n;
-		_parent->appendChild(n_a);
-		T value=*(_root->value);
-		T *value_a=&value;
-		n.value=value_a;
+	static void copySubTreeAux(node* _root,node* _parent){
+		node* n=newNode(_root->value, _parent);
+		_parent->appendChild(_parent, n);
 		typename vector<node<T>*>::iterator it;
 		for(it=_root->children.begin();it!=_root->children.end();it++){
-			copySubTreeAux((*it),n_a);
+			copySubTreeAux(*it,n);
 		}
 	}
-	node copySubTree(node* _root){
-		node n,*n_a;
-		n_a=&n;
-		n.parent=NULL;
-		T value=*(_root->value);
-		T *value_a=&value;
-		n.value=value_a;
+	node* copySubTree(node* _root){
+		node *n=newNode(_root->value,NULL);
 		typename vector<node<T>*>::iterator it;
 		for(it=_root->children.begin();it!=_root->children.end();it++){
-			copySubTreeAux((*it),n_a);
+			copySubTreeAux((*it),n);
 		}
 		return n;
+	}
+
+	static void cutBranch(node* _branch){
+		node* parent=_branch->parent;
+		bool f=false;
+		_branch->parent=NULL;
+		typename vector<node<T>*>::iterator it;
+		for(it=parent->children.begin();(it!=parent->children.end())&&(!f);it++){
+			if(&(*it)==_branch){
+				parent->children.erase(it);
+				f=true;
+			}
+		}
 	}
 };
 

@@ -1,57 +1,47 @@
 /*
  * main.cpp
  *
- *  Created on: Dec 9, 2020
+ *  Created on: Dec 31, 2020
  *      Author: gips
  */
-
 #include "EtzNary.hpp"
-#include "TreTrns.hpp"
-#include <bits/stdc++.h>
-#include <iostream>
-using namespace std;
-//template <typename T>
-//class node{
-//public:
-//	T 				 value;
-//	vector<node*> children;
-//	node();
-//	node(T _value);
-////	node<T>* node::newNode(T _value);
-//
-//	void appendChild(T _value);
-//	void appendChild(node _child);
-//};
-//template <typename T>
-//node<T>::node(){}
-//template <typename T>
-//node<T>::node(T _value){
-//	value=_value;
-//}
-//template <typename T>
-//void node<T>::appendChild(T _value){
-//	node temp(_value);
-//	this->children.push_back(&temp);
-//}
-//template <typename T>
-//void node<T>::appendChild(node _child){
-//	this->children.push_back(&_child);
-//}
+#include "streamTree.hpp"
+
 
 int main(){
-	point3D P(1,2,3),P1(2,4,6);
-	node<point3D> nP(P);
-	nP.appendChild(&P1);
-//	node<int> x1(1),x2(2);
-//	x1.appendChild(3);
-//	node<string> y1("1"),y2("1"),y3("tot");
-//	y1.appendChild(&y3, &y2);
-//	y1.appendChild(&y2,&y1);
-//	y1.topToBottom2Text("../nodeTree/OU.txt");
-////	y.appendChild(&y,&y);
-//	vector<node<int>> z;
+	//	double X=1.2,X1=3,X2=4;
+	//	node <double> nX(1.5),nX1(0.2),Nx2(0.8);
+	//	nX.appendChild(new node<double>(0.1), &nX);
+	//	nX.appendChild(new node<double>(0.5), &nX);
+	//	nX.appendChild(new node<double>(0.8), &nX);
+	//	node <double> *n;//=*(nX.children.begin());
+	////	n=&(*(nX.children.begin()));
+	////	n->appendChild(new node<double>(0.25), n);
+	////	n->appendChild(new node<double>(0.8),n);
+//	Node* n=Node::newNode(0.3,NULL);
+//	n->children.push_back(Node::newNode(0.2,n));
+//	n->children.push_back(Node::newNode(0.4,n));
+//	n->children.push_back(Node::newNode(0.3,n));
+//	n->children.push_back(Node::newNode(0.9,n));
+//	n->children.push_back(Node::newNode(0.8,n));
+//	Node* n1=Node::newNode(0.3,NULL);
+//	n1->children.push_back(Node::newNode(0.2,n1));
+//	n1->children.push_back(Node::newNode(0.4,n1));
+//	n1->children.push_back(Node::newNode(0.3,n1));
+//	n1->children.push_back(Node::newNode(0.9,n1));
+//	n1->children.push_back(Node::newNode(0.8,n1));
+//	Node::appendChild(n,n1);
+	NodeP *P=NodeP::newNode(point3D(1,2,3),NULL);
+	NodeS *S=NodeS::newNode(streamLine3D(&(P->value)),NULL);
+	point3D p=point3D(1,2,3);
+	streamTree3D T(P,S);
 
-	cout<< "too slow";
+
+
+
+
 	return 0;
 }
+
+
 

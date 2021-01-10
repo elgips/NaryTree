@@ -45,11 +45,11 @@ point3D point3D::Rz(double theta){
 	temp.z=z;
 	return temp;
 }
-point3D point3D::MatrixRotate(double _M[3][3]){ //_M is symmetric
+point3D point3D::MatrixRotate(double* _M[3][3]){ //_M is symmetric
 	point3D temp;
-	temp.x=x*_M[0][0]+y*_M[0][1]+z*_M[0][2];
-	temp.y=x*_M[0][1]+y*_M[1][1]+z*_M[1][2];
-	temp.z=x*_M[0][2]+y*_M[1][2]+z*_M[2][2];
+	temp.x=x*(*_M)[0][0]+y*(*_M)[0][1]+z*(*_M)[0][2];
+	temp.y=x*(*_M)[0][1]+y*(*_M)[1][1]+z*(*_M)[1][2];
+	temp.z=x*(*_M)[0][2]+y*(*_M)[1][2]+z*(*_M)[2][2];
 	return temp;
 }
 double point3D::norm(){

@@ -25,8 +25,8 @@ public:
 	void updateDirRy(double _theta);
 	void updateDirRz(double _theta);
 	streamLine3D childStream(point3D* _pE, double dist);
-	void rotateStream(double _M[3][3]);
-	void rotateStreamAndPoints(double _M[3][3]);
+	void rotateStream(double* _M[3][3]);
+	void rotateStreamAndPoints(double* _M[3][3]);
 };
 
 

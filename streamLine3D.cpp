@@ -184,7 +184,7 @@ streamLine3D streamLine3D::childStream(point3D* _pE,double dist){
 	streamLine3D StLn(pE,pH,pL,pU);
 	return StLn;
 }
-	void streamLine3D::rotateStream(double _M[3][3]){//_M is symmetric rotation matrix
+	void streamLine3D::rotateStream(double* _M[3][3]){//_M is symmetric rotation matrix
 		point3D PH(pH),PL(pL),PU(pU);
 		pH=PH.MatrixRotate(_M);
 		pH.normalize();
@@ -193,7 +193,7 @@ streamLine3D streamLine3D::childStream(point3D* _pE,double dist){
 		pU=PU.MatrixRotate(_M);
 		pU.normalize();
 	}
-	void streamLine3D::rotateStreamAndPoints(double _M[3][3]){//_M is symmetric rotation matrix
+	void streamLine3D::rotateStreamAndPoints(double* _M[3][3]){//_M is symmetric rotation matrix
 		point3D PH(pH),PL(pL),PU(pU);
 		pH=PH.MatrixRotate(_M);
 		pH.normalize();

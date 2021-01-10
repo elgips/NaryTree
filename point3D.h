@@ -23,7 +23,7 @@ public:
 	point3D Rx(double theta);
 	point3D Ry(double theta);
 	point3D Rz(double theta);
-	point3D MatrixRotate(double _M[3][3]);
+	point3D MatrixRotate(double *_M[3][3]);
 	double norm();
 	void normalize();
 	void set(double _x,double _y,double _z);
