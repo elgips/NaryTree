@@ -8,13 +8,11 @@
 #ifndef STREAMLINE3D_H_
 #define STREAMLINE3D_H_
 #include"point3D.h"
-//using namespace std;
 class streamLine3D{
 public:
 
 	point3D *pI,*pE,pH,pL,pU;
 	streamLine3D();
-//	streamLine3D(point3D _pi);
 	streamLine3D(point3D* _pi);
 	streamLine3D(point3D* _pi,point3D _pH0,point3D _pL0,point3D _pU0);
 	streamLine3D(point3D* _pi,point3D _pH0);

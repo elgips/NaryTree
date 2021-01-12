@@ -33,7 +33,7 @@ int main(){
 //	Node::appendChild(n,n1);
 	NodeP *P=NodeP::newNode(point3D(1,2,3),NULL);
 	NodeS *S=NodeS::newNode(streamLine3D(&(P->value)),NULL);
-	point3D p=point3D(1,2,3);
+//	point3D p=point3D(1,2,3);
 	streamTree3D T(P,S);
 
 

@@ -9,6 +9,10 @@
 #define STREAMTREE_HPP_
 #include "streamLine3D.h"
 #include "EtzNary.hpp"
+#define defD 0.1
+#define PI	3.14
+#define defDeg PI/4
+
 typedef node<point3D> NodeP;
 typedef node<streamLine3D> NodeS;
 class streamTree3D{
@@ -83,7 +87,160 @@ public:
 		}
 
 	}
-};
+	static void stringTurtling2StreamT(string _s,NodeP *_P,NodeS *_S){
+		//		streamTree3D* ST;
+		NodeP *NPt=_P;
+		NodeS *NSt=_S;
+//		typename vector<NodeS*>::iterator itS;
+//		typename vector<NodeP*>::iterator itP;
+		size_t it,it2;
+		double D,H,L,U;
+		string temp;
+		char x,xsign;
+		point3D 	*Pt=new point3D;
+		streamLine3D	*St=new streamLine3D;
+		it=0;
+		while(it!=_s.length()){
+			x=_s[it];
+			xsign=_s[it+1];
+			switch(x){
+			case 'F':
+				if(_s.substr(it).find("F(")==0){
+					temp=_s.substr(it+2);
+					it2=_s.substr(it).find(")");
+					D=std::stod(_s.substr(0,it-1));
+				}
+				else{
+					D=defD;
+				}
+				NPt->appendChild(NPt, NodeP::newNode(point3D(),NPt));
+				Pt=NPt->children.back()->value;
+				St=NSt->value.childStream(Pt, D);
+				NSt->appendChild(NSt,NodeS::newNode(*St,NSt));
+				NPt=NPt->children.back();
+				NSt=NSt->children.back();
+				break;
+			case 'H':
+				switch(xsign){
+				case 'p':
+					if(_s.substr(it).find("Hp(")==0){
+						temp=_s.substr(it+3);
+						it2=_s.substr(it).find(")");
+						H=std::stod(_s.substr(0,it2-1));
+						it+=it2;
+					}
+					else{
+						H=defDeg;
+						it++++;
+					}
+					NSt->value.updateDirRx(H);
+					break;
+				case 'm':
+					if(_s.substr(it).find("Hm(")==0){
+						temp=_s.substr(it+3);
+						it2=_s.substr(it).find(")");
+						H=std::stod(_s.substr(0,it2-1));
+						it+=it2;
+					}
+					else{
+						H=defDeg;
+						it++++;
+					}
+					NSt->value.updateDirRx(-H);
+					break;
+				default:
+					H=defDeg;
+					NSt->value.updateDirRx(H);
+					break;
+				}
+				break;
+				case 'L':
+					switch(xsign){
+					case 'p':
+						if(_s.substr(it).find("Lp(")==0){
+							temp=_s.substr(it+3);
+							it2=_s.substr(it).find(")");
+							L=std::stod(_s.substr(0,it2-1));
+							it+=it2;
+						}
+						else{
+							L=defDeg;
+							it++++;
+						}
+						NSt->value.updateDirRy(L);
+						break;
+					case 'm':
+						if(_s.substr(it).find("Lm(")==0){
+							temp=_s.substr(it+3);
+							it2=_s.substr(it).find(")");
+							L=std::stod(_s.substr(0,it2-1));
+							it+=it2;
+						}
+						else{
+							L=defDeg;
+							it++++;
+						}
+						NSt->value.updateDirRy(-L);
+						break;
+					default:
+						L=defDeg;
+						NSt->value.updateDirRy(L);
+						break;
+					}
+					break;
+					case 'U':
+						switch(xsign){
+						case 'p':
+							if(_s.substr(it).find("Up(")==0){
+								temp=_s.substr(it+3);
+								it2=_s.substr(it).find(")");
+								U=std::stod(_s.substr(0,it2-1));
+								it+=it2;
+							}
+							else{
+								U=defDeg;
+								it++++;
+							}
+							NSt->value.updateDirRz(U);
+							break;
+						case 'm':
+							if(_s.substr(it).find("Lm(")==0){
+								temp=_s.substr(it+3);
+								it2=_s.substr(it).find(")");
+								U=std::stod(_s.substr(0,it2-1));
+								it+=it2;
+							}
+							else{
+								U=defDeg;
+								it++++;
+							}
+							NSt->value.updateDirRz(-U);
+							break;
+						default:
+							U=defDeg;
+							NSt->value.updateDirRz(U);
+							break;
+						}
+						break;
+						case '{':
+							NodeS::appendChild(NSt->parent,NodeS::newNode(NSt->value,NSt->parent));
+							NSt=NSt->parent->children.back();
+							it++;
+							break;
+						case '}':
+							if(NSt==NSt->children.front()){
+								NSt=NSt->parent;
+								NPt=NPt->parent;
+							}else NSt=NSt->parent->children.front();
+							break;
+						default:
+							it++;
+							break;
+			}
+
+		}
+	}
+	};
 
 
 
