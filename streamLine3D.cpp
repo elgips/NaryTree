@@ -176,13 +176,15 @@ void streamLine3D::updateDirRz(double _theta){
 	pL=pL.Rz(_theta);
 	pU=pU.Rz(_theta);
 }
-streamLine3D streamLine3D::childStream(point3D* _pE,double dist){
-	point3D PE(pI->x+pH.x*dist,pI->y+pH.y*dist,pI->z+pH.z*dist);
-	*_pE=PE;
-	pE=_pE;
-
-	streamLine3D StLn(pE,pH,pL,pU);
-	return StLn;
+void streamLine3D::childStream(point3D* _pE,streamLine3D* _parentStream,streamLine3D* _childStream,double dist){
+	_pE->x=_parentStream->pI->x+_parentStream->pH.x*dist;
+	_pE->y=_parentStream->pI->y+_parentStream->pH.y*dist;
+	_pE->z=_parentStream->pI->z+_parentStream->pH.z*dist;
+	_parentStream->pE=_pE;
+	_childStream->pI=_pE;
+	_childStream->pH=_parentStream->pH;
+	_childStream->pL=_parentStream->pL;
+	_childStream->pU=_parentStream->pU;
 }
 	void streamLine3D::rotateStream(double* _M[3][3]){//_M is symmetric rotation matrix
 		point3D PH(pH),PL(pL),PU(pU);

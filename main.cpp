@@ -6,7 +6,16 @@
  */
 #include "EtzNary.hpp"
 #include "streamTree.hpp"
+//typedef node<double> ND;
 
+//ND string2nodes(string _s){
+//	ND *temp=new ND;
+//	typename vector<ND*>::iterator iND;
+//	size_t it,it2;
+//	string stTem;
+//	char x,xsign;
+//
+//}
 
 int main(){
 	//	double X=1.2,X1=3,X2=4;
@@ -31,10 +40,17 @@ int main(){
 //	n1->children.push_back(Node::newNode(0.9,n1));
 //	n1->children.push_back(Node::newNode(0.8,n1));
 //	Node::appendChild(n,n1);
-	NodeP *P=NodeP::newNode(point3D(1,2,3),NULL);
+	NodeP *P=NodeP::newNode(point3D(),NULL);
+//	NodeP *P1=NodeP::newNode(point3D(),P);
+//	point3D *temp;
+//	temp=&(P1->value);
 	NodeS *S=NodeS::newNode(streamLine3D(&(P->value)),NULL);
+//	NodeS *S1=NodeS::newNode(streamLine3D(), S);
+//	streamLine3D::childStream(&(P1->value),&(S->value),&(S1->value), 0.2);
 //	point3D p=point3D(1,2,3);
 	streamTree3D T(P,S);
+	string s="FF(0.2){Um(0.7)Hm(0.8)FUm(0.7)Hm(0.8)F(0.7)FFF(0.2)}";
+	streamTree3D *T1=streamTree3D::stringTurtling2StreamT(s);
 
 
 

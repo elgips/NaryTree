@@ -87,20 +87,22 @@ public:
 		}
 
 	}
-	static void stringTurtling2StreamT(string _s,NodeP *_P,NodeS *_S){
-		//		streamTree3D* ST;
-		NodeP *NPt=_P;
-		NodeS *NSt=_S;
+	static streamTree3D* stringTurtling2StreamT(string _s){
+		streamTree3D* ST3D=new streamTree3D;
+		NodeP *NPt=NodeP::newNode(point3D(),NULL);
+		NodeS *NSt=NodeS::newNode(streamLine3D(&(NPt->value)), NULL);
+		ST3D->P=NPt;
+		ST3D->S=NSt;
 //		typename vector<NodeS*>::iterator itS;
 //		typename vector<NodeP*>::iterator itP;
 		size_t it,it2;
 		double D,H,L,U;
 		string temp;
 		char x,xsign;
-		point3D 	*Pt=new point3D;
-		streamLine3D	*St=new streamLine3D;
+//		point3D 	*Pt,Pt1;
+//		streamLine3D	*St,St1;
 		it=0;
-		while(it!=_s.length()){
+		while(it<_s.length()){
 			x=_s[it];
 			xsign=_s[it+1];
 			switch(x){
@@ -113,12 +115,14 @@ public:
 				else{
 					D=defD;
 				}
-				NPt->appendChild(NPt, NodeP::newNode(point3D(),NPt));
-				Pt=NPt->children.back()->value;
-				St=NSt->value.childStream(Pt, D);
-				NSt->appendChild(NSt,NodeS::newNode(*St,NSt));
+				NPt->appendChild(NPt, NodeP::newNode(point3D(),NULL));
+				NSt->appendChild(NSt, NodeS::newNode(streamLine3D(),NULL));
+//				point3D *Pt=&(NPt->children.back()->value);
+//				streamLine3D *St=&(NSt->children.back()->value);
+				streamLine3D::childStream(&(NPt->children.back()->value), &(NSt->value),&(NSt->children.back()->value),D);
 				NPt=NPt->children.back();
 				NSt=NSt->children.back();
+				it+=it2;
 				break;
 			case 'H':
 				switch(xsign){
@@ -131,7 +135,7 @@ public:
 					}
 					else{
 						H=defDeg;
-						it++++;
+						it+=2;
 					}
 					NSt->value.updateDirRx(H);
 					break;
@@ -144,7 +148,7 @@ public:
 					}
 					else{
 						H=defDeg;
-						it++++;
+						it+=2;
 					}
 					NSt->value.updateDirRx(-H);
 					break;
@@ -165,7 +169,7 @@ public:
 						}
 						else{
 							L=defDeg;
-							it++++;
+							it+=2;
 						}
 						NSt->value.updateDirRy(L);
 						break;
@@ -178,7 +182,7 @@ public:
 						}
 						else{
 							L=defDeg;
-							it++++;
+							it+=2;
 						}
 						NSt->value.updateDirRy(-L);
 						break;
@@ -199,7 +203,7 @@ public:
 							}
 							else{
 								U=defDeg;
-								it++++;
+								it+=2;
 							}
 							NSt->value.updateDirRz(U);
 							break;
@@ -212,7 +216,7 @@ public:
 							}
 							else{
 								U=defDeg;
-								it++++;
+								it+=2;
 							}
 							NSt->value.updateDirRz(-U);
 							break;
@@ -223,7 +227,7 @@ public:
 						}
 						break;
 						case '{':
-							NodeS::appendChild(NSt->parent,NodeS::newNode(NSt->value,NSt->parent));
+							NodeS::appendChild(NSt->parent,NodeS::newNode(NSt->value,NULL));
 							NSt=NSt->parent->children.back();
 							it++;
 							break;
@@ -239,6 +243,8 @@ public:
 			}
 
 		}
+//		streamTree3D ST3D(NPt, NSt);
+		return ST3D;
 	}
 	};
 

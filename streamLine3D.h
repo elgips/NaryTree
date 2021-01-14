@@ -22,7 +22,7 @@ public:
 	void updateDirRx(double _theta);
 	void updateDirRy(double _theta);
 	void updateDirRz(double _theta);
-	streamLine3D childStream(point3D* _pE, double dist);
+	static void childStream(point3D* _pE,streamLine3D* _parentStream,streamLine3D* _child, double dist);
 	void rotateStream(double* _M[3][3]);
 	void rotateStreamAndPoints(double* _M[3][3]);
 };
