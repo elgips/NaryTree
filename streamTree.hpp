@@ -93,14 +93,14 @@ public:
 		NodeS *NSt=NodeS::newNode(streamLine3D(&(NPt->value)), NULL);
 		ST3D->P=NPt;
 		ST3D->S=NSt;
-//		typename vector<NodeS*>::iterator itS;
-//		typename vector<NodeP*>::iterator itP;
+		//		typename vector<NodeS*>::iterator itS;
+		//		typename vector<NodeP*>::iterator itP;
 		size_t it,it2;
 		double D,H,L,U;
 		string temp;
 		char x,xsign;
-//		point3D 	*Pt,Pt1;
-//		streamLine3D	*St,St1;
+		//		point3D 	*Pt,Pt1;
+		//		streamLine3D	*St,St1;
 		it=0;
 		while(it<_s.length()){
 			x=_s[it];
@@ -109,62 +109,70 @@ public:
 			case 'F':
 				if(_s.substr(it).find("F(")==0){
 					temp=_s.substr(it+2);
-					it2=_s.substr(it).find(")");
-					D=std::stod(_s.substr(0,it-1));
+					it2=temp.find(")");
+					D=std::stod(temp.substr(0,it2));
+					it+=it2+3;
 				}
 				else{
 					D=defD;
+					it++;
 				}
 				NPt->appendChild(NPt, NodeP::newNode(point3D(),NULL));
 				NSt->appendChild(NSt, NodeS::newNode(streamLine3D(),NULL));
-//				point3D *Pt=&(NPt->children.back()->value);
-//				streamLine3D *St=&(NSt->children.back()->value);
+				//				point3D *Pt=&(NPt->children.back()->value);
+				//				streamLine3D *St=&(NSt->children.back()->value);
 				streamLine3D::childStream(&(NPt->children.back()->value), &(NSt->value),&(NSt->children.back()->value),D);
 				NPt=NPt->children.back();
 				NSt=NSt->children.back();
-				it+=it2;
+
 				break;
 			case 'H':
-				switch(xsign){
-				case 'p':
-					if(_s.substr(it).find("Hp(")==0){
-						temp=_s.substr(it+3);
-						it2=_s.substr(it).find(")");
-						H=std::stod(_s.substr(0,it2-1));
-						it+=it2;
-					}
-					else{
+				if(it+1<_s.length()){
+					switch(xsign){
+					case 'p':
+						if(_s.substr(it).find("Hp(")==0){
+							temp=_s.substr(it+3);
+							it2=temp.find(")");
+							H=std::stod(temp.substr(0,it2));
+							it+=it2;
+						}
+						else{
+							H=defDeg;
+							it+=2;
+						}
+						NSt->value.updateDirRx(H);
+						break;
+					case 'm':
+						if(_s.substr(it).find("Hm(")==0){
+							temp=_s.substr(it+3);
+							it2=temp.find(")");
+							H=std::stod(temp.substr(0,it2));
+							it+=it2;
+						}
+						else{
+							H=defDeg;
+							it+=2;
+						}
+						NSt->value.updateDirRx(-H);
+						break;
+					default:
 						H=defDeg;
-						it+=2;
-					}
-					NSt->value.updateDirRx(H);
-					break;
-				case 'm':
-					if(_s.substr(it).find("Hm(")==0){
-						temp=_s.substr(it+3);
-						it2=_s.substr(it).find(")");
-						H=std::stod(_s.substr(0,it2-1));
-						it+=it2;
-					}
-					else{
+						NSt->value.updateDirRx(H);
+						break;
+					}}else{
 						H=defDeg;
-						it+=2;
+						it++;
+						NSt->value.updateDirRx(H);
 					}
-					NSt->value.updateDirRx(-H);
-					break;
-				default:
-					H=defDeg;
-					NSt->value.updateDirRx(H);
-					break;
-				}
 				break;
-				case 'L':
+			case 'L':
+				if(it+1<_s.length()){
 					switch(xsign){
 					case 'p':
 						if(_s.substr(it).find("Lp(")==0){
 							temp=_s.substr(it+3);
-							it2=_s.substr(it).find(")");
-							L=std::stod(_s.substr(0,it2-1));
+							it2=temp.find(")");
+							L=std::stod(temp.substr(0,it2));
 							it+=it2;
 						}
 						else{
@@ -176,8 +184,8 @@ public:
 					case 'm':
 						if(_s.substr(it).find("Lm(")==0){
 							temp=_s.substr(it+3);
-							it2=_s.substr(it).find(")");
-							L=std::stod(_s.substr(0,it2-1));
+							it2=temp.find(")");
+							L=std::stod(temp.substr(0,it2));
 							it+=it2;
 						}
 						else{
@@ -189,64 +197,78 @@ public:
 					default:
 						L=defDeg;
 						NSt->value.updateDirRy(L);
-						break;
-					}
-					break;
-					case 'U':
-						switch(xsign){
-						case 'p':
-							if(_s.substr(it).find("Up(")==0){
-								temp=_s.substr(it+3);
-								it2=_s.substr(it).find(")");
-								U=std::stod(_s.substr(0,it2-1));
-								it+=it2;
-							}
-							else{
-								U=defDeg;
-								it+=2;
-							}
-							NSt->value.updateDirRz(U);
-							break;
-						case 'm':
-							if(_s.substr(it).find("Lm(")==0){
-								temp=_s.substr(it+3);
-								it2=_s.substr(it).find(")");
-								U=std::stod(_s.substr(0,it2-1));
-								it+=it2;
-							}
-							else{
-								U=defDeg;
-								it+=2;
-							}
-							NSt->value.updateDirRz(-U);
-							break;
-						default:
-							U=defDeg;
-							NSt->value.updateDirRz(U);
-							break;
+						break;}
+				}else{
+					L=defDeg;
+					it++;
+					NSt->value.updateDirRy(L);
+				}
+				break;
+			case 'U':
+				if(it+1<_s.length()){
+					switch(xsign){
+					case 'p':
+						if(_s.substr(it).find("Up(")==0){
+							temp=_s.substr(it+3);
+							it2=temp.find(")");
+							U=std::stod(temp.substr(0,it2));
+							it+=it2;
 						}
+						else{
+							U=defDeg;
+							it+=2;
+						}
+						NSt->value.updateDirRz(U);
 						break;
-						case '{':
-							NodeS::appendChild(NSt->parent,NodeS::newNode(NSt->value,NULL));
-							NSt=NSt->parent->children.back();
-							it++;
-							break;
-						case '}':
-							if(NSt==NSt->children.front()){
-								NSt=NSt->parent;
-								NPt=NPt->parent;
-							}else NSt=NSt->parent->children.front();
-							break;
-						default:
-							it++;
-							break;
+					case 'm':
+						if(_s.substr(it).find("Lm(")==0){
+							temp=_s.substr(it+3);
+							it2=temp.find(")");
+							U=std::stod(temp.substr(0,it2));
+							it+=it2;
+						}
+						else{
+							U=defDeg;
+							it+=2;
+						}
+						NSt->value.updateDirRz(-U);
+						break;
+					default:
+						U=defDeg;
+						NSt->value.updateDirRz(U);
+						break;
+					}}else{
+						H=defDeg;
+						it++;
+						NSt->value.updateDirRx(H);
+					}
+				break;
+			case '{':
+				NodeS::appendChild(NSt->parent,NodeS::newNode(NSt->value,NULL));
+				NSt=NSt->parent->children.back();
+				it++;
+				break;
+			case '}':
+				if(NSt==NSt->parent->children.front()){
+					while(NSt==NSt->parent->children.front()){
+						NSt=NSt->parent;
+						NPt=NPt->parent;
+					}
+				}else {
+					NSt=NSt->parent->children.front();
+					it++;
+				}
+				break;
+			default:
+				it++;
+				break;
 			}
 
 		}
-//		streamTree3D ST3D(NPt, NSt);
+		//		streamTree3D ST3D(NPt, NSt);
 		return ST3D;
 	}
-	};
+};
 
 
 

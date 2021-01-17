@@ -49,7 +49,7 @@ int main(){
 //	streamLine3D::childStream(&(P1->value),&(S->value),&(S1->value), 0.2);
 //	point3D p=point3D(1,2,3);
 	streamTree3D T(P,S);
-	string s="FF(0.2){Um(0.7)Hm(0.8)FUm(0.7)Hm(0.8)F(0.7)FFF(0.2)}";
+	string s="FF(0.2){Um(0.7)Hm(0.8)FUm(0.7)Hm(0.8)F(0.7)FFF(0.2)}FF";
 	streamTree3D *T1=streamTree3D::stringTurtling2StreamT(s);
 
 
