@@ -268,6 +268,56 @@ public:
 		//		streamTree3D ST3D(NPt, NSt);
 		return ST3D;
 	}
+	static void pointExportAux(NodeP* _child,ofstream* out){
+		*out<<endl;
+		string s=std::to_string(_child->value.x)+" "+std::to_string(_child->value.y)+" "+std::to_string(_child->value.z)+"\n";
+		*out<<s;
+		if(!_child->children.empty()){
+			typename vector<NodeP*>::iterator it;
+			for(it=_child->children.begin();it!=_child->children.end();it++){
+				pointExportAux(*it,out);
+			}
+		}
+	}
+	static void pointExport(string _fileName,streamTree3D* T){
+		ofstream out( _fileName.c_str(), ios::out );
+		NodeP* Np=T->P;
+		string s=std::to_string(Np->value.x)+" "+std::to_string(Np->value.y)+" "+std::to_string(Np->value.z)+"\n";
+		out<<s;
+		if(!Np->children.empty()){
+			typename vector<NodeP*>::iterator it;
+			for(it=Np->children.begin();it!=Np->children.end();it++){
+				pointExportAux(*it,&out);
+			}
+		}
+		out.close();
+	}
+	static void streamExportAux(NodeS* _child,ofstream* out){
+		*out<<endl;
+		if(_child->value.pE!=0x0){
+			string s=std::to_string(_child->value.pI->x)+" "+std::to_string(_child->value.pI->y)+" "+std::to_string(_child->value.pI->z)+" "+std::to_string(_child->value.pE->x)+" "+std::to_string(_child->value.pE->y)+" "+std::to_string(_child->value.pE->z)+"\n";
+			*out<<s;
+			if(!_child->children.empty()){
+				typename vector<NodeS*>::iterator it;
+				for(it=_child->children.begin();it!=_child->children.end();it++){
+					streamExportAux(*it,out);
+				}
+			}
+		}
+	}
+	static void streamExport(string _fileName,streamTree3D* T){
+		ofstream out( _fileName.c_str(), ios::out );
+		NodeS* Ns=T->S;
+		string s=std::to_string(Ns->value.pI->x)+" "+std::to_string(Ns->value.pI->y)+" "+std::to_string(Ns->value.pI->z)+" "+std::to_string(Ns->value.pE->x)+" "+std::to_string(Ns->value.pE->y)+" "+std::to_string(Ns->value.pE->z)+"\n";
+		out<<s;
+		if(!Ns->children.empty()){
+			typename vector<NodeS*>::iterator it;
+			for(it=Ns->children.begin();it!=Ns->children.end();it++){
+				streamExportAux(*it,&out);
+			}
+		}
+		out.close();
+	}
 };
 
 
