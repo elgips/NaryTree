@@ -9,9 +9,9 @@
 #define STREAMTREE_HPP_
 #include "streamLine3D.h"
 #include "EtzNary.hpp"
-#define defD 0.1
+#define defD 0.05
 #define PI	3.14
-#define defDeg PI/4
+#define defDeg PI/2.1
 
 typedef node<point3D> NodeP;
 typedef node<streamLine3D> NodeS;
@@ -87,7 +87,7 @@ public:
 		}
 
 	}
-	static streamTree3D* stringTurtling2StreamT(string _s){
+	static streamTree3D* stringTurtling2StreamT(string _s){/*fits for non negative input values in functions*/
 		streamTree3D* ST3D=new streamTree3D;
 		NodeP *NPt=NodeP::newNode(point3D(),NULL);
 		NodeS *NSt=NodeS::newNode(streamLine3D(&(NPt->value)), NULL);
@@ -124,131 +124,91 @@ public:
 				streamLine3D::childStream(&(NPt->children.back()->value), &(NSt->value),&(NSt->children.back()->value),D);
 				NPt=NPt->children.back();
 				NSt=NSt->children.back();
-
 				break;
-			case 'H':
-				if(it+1<_s.length()){
-					switch(xsign){
-					case 'p':
-						if(_s.substr(it).find("Hp(")==0){
-							temp=_s.substr(it+3);
-							it2=temp.find(")");
-							H=std::stod(temp.substr(0,it2));
-							it+=it2;
-						}
-						else{
-							H=defDeg;
-							it+=2;
-						}
-						NSt->value.updateDirRx(H);
-						break;
-					case 'm':
-						if(_s.substr(it).find("Hm(")==0){
-							temp=_s.substr(it+3);
-							it2=temp.find(")");
-							H=std::stod(temp.substr(0,it2));
-							it+=it2;
-						}
-						else{
-							H=defDeg;
-							it+=2;
-						}
-						NSt->value.updateDirRx(-H);
-						break;
-					default:
-						H=defDeg;
-						NSt->value.updateDirRx(H);
-						break;
-					}}else{
-						H=defDeg;
-						it++;
-						NSt->value.updateDirRx(H);
-					}
-				break;
-			case 'L':
-				if(it+1<_s.length()){
-					switch(xsign){
-					case 'p':
-						if(_s.substr(it).find("Lp(")==0){
-							temp=_s.substr(it+3);
-							it2=temp.find(")");
-							L=std::stod(temp.substr(0,it2));
-							it+=it2;
-						}
-						else{
-							L=defDeg;
-							it+=2;
-						}
-						NSt->value.updateDirRy(L);
-						break;
-					case 'm':
-						if(_s.substr(it).find("Lm(")==0){
-							temp=_s.substr(it+3);
-							it2=temp.find(")");
-							L=std::stod(temp.substr(0,it2));
-							it+=it2;
-						}
-						else{
-							L=defDeg;
-							it+=2;
-						}
-						NSt->value.updateDirRy(-L);
-						break;
-					default:
-						L=defDeg;
-						NSt->value.updateDirRy(L);
-						break;}
-				}else{
-					L=defDeg;
-					it++;
-					NSt->value.updateDirRy(L);
+			case '+':
+				if(_s.substr(it).find("+(")==0){
+					temp=_s.substr(it+3);
+					it2=temp.find(")");
+					H=std::stod(temp.substr(0,it2));
+					it+=it2;
 				}
+				else{
+					H=defDeg;
+					it+=1;
+				}
+				NSt->value.updateDirRz(H);
 				break;
-			case 'U':
-				if(it+1<_s.length()){
-					switch(xsign){
-					case 'p':
-						if(_s.substr(it).find("Up(")==0){
-							temp=_s.substr(it+3);
-							it2=temp.find(")");
-							U=std::stod(temp.substr(0,it2));
-							it+=it2;
-						}
-						else{
-							U=defDeg;
-							it+=2;
-						}
-						NSt->value.updateDirRz(U);
-						break;
-					case 'm':
-						if(_s.substr(it).find("Lm(")==0){
-							temp=_s.substr(it+3);
-							it2=temp.find(")");
-							U=std::stod(temp.substr(0,it2));
-							it+=it2;
-						}
-						else{
-							U=defDeg;
-							it+=2;
-						}
-						NSt->value.updateDirRz(-U);
-						break;
-					default:
-						U=defDeg;
-						NSt->value.updateDirRz(U);
-						break;
-					}}else{
-						H=defDeg;
-						it++;
-						NSt->value.updateDirRx(H);
-					}
+			case '-':
+				if(_s.substr(it).find("-(")==0){
+					temp=_s.substr(it+3);
+					it2=temp.find(")");
+					H=std::stod(temp.substr(0,it2));
+					it+=it2;
+				}
+				else{
+					H=defDeg;
+					it+=1;
+				}
+				NSt->value.updateDirRz(-H);
 				break;
-			case '{':
+			case '&':
+				if(_s.substr(it).find("&(")==0){
+					temp=_s.substr(it+3);
+					it2=temp.find(")");
+					H=std::stod(temp.substr(0,it2));
+					it+=it2;
+				}
+				else{
+					H=defDeg;
+					it+=1;
+				}
+				NSt->value.updateDirRy(H);
+				break;
+			case '^':
+				if(_s.substr(it).find("^(")==0){
+					temp=_s.substr(it+3);
+					it2=temp.find(")");
+					H=-std::stod(temp.substr(0,it2));
+					it+=it2;
+				}
+				else{
+					H=-defDeg;
+					it+=1;
+				}
+				NSt->value.updateDirRy(H);
+				break;
+			case 92:
+				if(_s.substr(it).find("\(")==0){
+					temp=_s.substr(it+3);
+					it2=temp.find(")");
+					H=std::stod(temp.substr(0,it2));
+					it+=it2;
+				}
+				else{
+					H=defDeg;
+					it+=1;
+				}
+				NSt->value.updateDirRx(H);
+				break;
+			case '/':
+				if(_s.substr(it).find("/(")==0){
+					temp=_s.substr(it+3);
+					it2=temp.find(")");
+					H=-std::stod(temp.substr(0,it2));
+					it+=it2;
+				}
+				else{
+					H=-defDeg;
+					it+=1;
+				}
+				NSt->value.updateDirRx(H);
+				break;
+			case '[':
 				NodeS::appendChild(NSt->parent,NodeS::newNode(NSt->value,NULL));
 				NSt=NSt->parent->children.back();
 				it++;
 				break;
-			case '}':
+			case ']':
 				if(NSt==NSt->parent->children.front()){
 					while(NSt==NSt->parent->children.front()){
 						NSt=NSt->parent;
@@ -269,8 +229,8 @@ public:
 		return ST3D;
 	}
 	static void pointExportAux(NodeP* _child,ofstream* out){
-		*out<<endl;
-		string s=std::to_string(_child->value.x)+" "+std::to_string(_child->value.y)+" "+std::to_string(_child->value.z)+"\n";
+		//		*out<<endl;
+		string s=std::to_string(_child->value.x)+" "+std::to_string(_child->value.y)+" "+std::to_string(_child->value.z)+" 1.000000 0.000000 0.000000\n";
 		*out<<s;
 		if(!_child->children.empty()){
 			typename vector<NodeP*>::iterator it;
@@ -282,7 +242,7 @@ public:
 	static void pointExport(string _fileName,streamTree3D* T){
 		ofstream out( _fileName.c_str(), ios::out );
 		NodeP* Np=T->P;
-		string s=std::to_string(Np->value.x)+" "+std::to_string(Np->value.y)+" "+std::to_string(Np->value.z)+"\n";
+		string s=std::to_string(Np->value.x)+" "+std::to_string(Np->value.y)+" "+std::to_string(Np->value.z)+" 1.000000 0.000000 0.000000\n";
 		out<<s;
 		if(!Np->children.empty()){
 			typename vector<NodeP*>::iterator it;
@@ -293,9 +253,11 @@ public:
 		out.close();
 	}
 	static void streamExportAux(NodeS* _child,ofstream* out){
-		*out<<endl;
+		//		*out<<endl;
 		if(_child->value.pE!=0x0){
-			string s=std::to_string(_child->value.pI->x)+" "+std::to_string(_child->value.pI->y)+" "+std::to_string(_child->value.pI->z)+" "+std::to_string(_child->value.pE->x)+" "+std::to_string(_child->value.pE->y)+" "+std::to_string(_child->value.pE->z)+"\n";
+			string s=std::to_string(_child->value.pI->x)+" "+std::to_string(_child->value.pI->y)+" "+std::to_string(_child->value.pI->z)+" 1.000000 0.000000 0.000000\n";
+			*out<<s;
+			s=std::to_string(_child->value.pE->x)+" "+std::to_string(_child->value.pE->y)+" "+std::to_string(_child->value.pE->z)+" 1.000000 0.000000 0.000000\n";
 			*out<<s;
 			if(!_child->children.empty()){
 				typename vector<NodeS*>::iterator it;
@@ -308,7 +270,9 @@ public:
 	static void streamExport(string _fileName,streamTree3D* T){
 		ofstream out( _fileName.c_str(), ios::out );
 		NodeS* Ns=T->S;
-		string s=std::to_string(Ns->value.pI->x)+" "+std::to_string(Ns->value.pI->y)+" "+std::to_string(Ns->value.pI->z)+" "+std::to_string(Ns->value.pE->x)+" "+std::to_string(Ns->value.pE->y)+" "+std::to_string(Ns->value.pE->z)+"\n";
+		string s=std::to_string(Ns->value.pI->x)+" "+std::to_string(Ns->value.pI->y)+" "+std::to_string(Ns->value.pI->z)+" 1.000000 0.000000 0.000000\n";
+		out<<s;
+		s=std::to_string(Ns->value.pE->x)+" "+std::to_string(Ns->value.pE->y)+" "+std::to_string(Ns->value.pE->z)+" 1.000000 0.000000 0.000000\n";
 		out<<s;
 		if(!Ns->children.empty()){
 			typename vector<NodeS*>::iterator it;

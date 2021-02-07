@@ -8,9 +8,9 @@
 streamLine3D::streamLine3D(){
 	point3D PI(0,0,0),X(1,0,0),Y(0,1,0),Z(0,0,1);
 	point3D *PI1=&PI,*PE1=0x0;
-	pH=X;
-	pL=Y;
-	pU=Z;
+	pH=Y;
+	pL=Z;
+	pU=X;
 	pI=PI1;
 	pE=PE1;
 }
@@ -26,9 +26,9 @@ streamLine3D::streamLine3D(){
 streamLine3D::streamLine3D(point3D* _pi){
 	point3D X(1,0,0),Y(0,1,0),Z(0,0,1);
 	point3D *PE1=0x0;
-	pH=X;
-	pL=Y;
-	pU=Z;
+	pH=Y;
+	pL=Z;
+	pU=X;
 	pI=_pi;
 	pE=PE1;
 }
