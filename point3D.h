@@ -17,6 +17,7 @@ public:
 	double x;
 	double y;
 	double z;
+	long unsigned int index;
 	point3D();
 	point3D(double _x,double _y,double _z);
 	point3D(const point3D& _p);
@@ -32,6 +33,7 @@ public:
 	point3D projection(point3D _p_hat);
 	void gramSh(vector<point3D> _vp);
 	string point2String();
+	void setIndex(long unsigned int _index);
 };
 
 

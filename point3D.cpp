@@ -10,16 +10,19 @@ point3D::point3D(){
 	x=0.0;
 	y=0.0;
 	z=0.0;
+	index=0;
 }
 point3D::point3D(double _x,double _y,double _z){
 	x=_x;
 	y=_y;
 	z=_z;
+	index=0;
 }
 point3D::point3D(const point3D& _p){
 	x=_p.x;
 	y=_p.y;
 	z=_p.z;
+	index=0;
 }
 point3D point3D::Rx(double theta){
 	point3D temp;
@@ -95,6 +98,8 @@ void point3D::gramSh(vector<point3D> _vp){
 	}
 }
 string point3D::point2String(){
-	return to_string(x)+" "+ to_string(y) + " "+ to_string(z);
+	return to_string(index)+" "+to_string(x)+" "+ to_string(y) + " "+ to_string(z);
 }
-
+void point3D::setIndex(long unsigned int _index){
+	this->index=_index;
+}

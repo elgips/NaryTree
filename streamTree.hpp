@@ -7,8 +7,8 @@
 
 #ifndef STREAMTREE_HPP_
 #define STREAMTREE_HPP_
-#include "streamLine3D.h"
 #include "EtzNary.hpp"
+#include "streamLine3DW.h"
 #define defD 0.05
 #define PI	3.14
 #define defDeg PI/2.1
@@ -89,22 +89,28 @@ public:
 	}
 	static streamTree3D* stringTurtling2StreamT(string _s){/*fits for non negative input values in functions*/
 		streamTree3D* ST3D=new streamTree3D;
+		long unsigned int nPoint=1;
+		long unsigned int nStream=1;
 		NodeP *NPt=NodeP::newNode(point3D(),NULL);
+		NPt->value.setIndex(nPoint);
+		nPoint++;
 		NodeS *NSt=NodeS::newNode(streamLine3D(&(NPt->value)), NULL);
+		//		NSt->value.setIndex(nStream);
+		//		nStream++;
 		ST3D->P=NPt;
 		ST3D->S=NSt;
 		//		typename vector<NodeS*>::iterator itS;
 		//		typename vector<NodeP*>::iterator itP;
 		size_t it,it2;
-		double D,H,L,U;
+		double D,H,width;//L,U,width;
 		string temp;
-		char x,xsign;
+		char x;//xsign;
 		//		point3D 	*Pt,Pt1;
 		//		streamLine3D	*St,St1;
 		it=0;
 		while(it<_s.length()){
 			x=_s[it];
-			xsign=_s[it+1];
+			//xsign=_s[it+1];
 			switch(x){
 			case 'F':
 				if(_s.substr(it).find("F(")==0){
@@ -121,9 +127,12 @@ public:
 				NSt->appendChild(NSt, NodeS::newNode(streamLine3D(),NULL));
 				//				point3D *Pt=&(NPt->children.back()->value);
 				//				streamLine3D *St=&(NSt->children.back()->value);
-				streamLine3D::childStream(&(NPt->children.back()->value), &(NSt->value),&(NSt->children.back()->value),D);
+				streamLine3D::childStream(&(NPt->children.back()->value), &(NSt->value),&(NSt->children.back()->value),D,width);
+				NSt->value.setIndex(nStream++);
 				NPt=NPt->children.back();
+				NPt->value.setIndex(++nPoint);
 				NSt=NSt->children.back();
+				//				NSt->value.setIndex(++nStream);
 				break;
 			case '+':
 				if(_s.substr(it).find("+(")==0){
@@ -188,7 +197,19 @@ public:
 					H=defDeg;
 					it+=1;
 				}
-				NSt->value.updateDirRx(H);
+				break;
+			case '!':
+				if(_s.substr(it).find("!(")==0){
+					temp=_s.substr(it+2);
+					it2=temp.find(")");
+					width=std::stod(temp.substr(0,it2));
+					it+=it2;
+				}
+				else{
+					width=1;
+					it+=1;
+				}
+				NSt->value.w=width;
 				break;
 			case '/':
 				if(_s.substr(it).find("/(")==0){
@@ -206,6 +227,7 @@ public:
 			case '[':
 				NodeS::appendChild(NSt->parent,NodeS::newNode(NSt->value,NULL));
 				NSt=NSt->parent->children.back();
+				//				NSt->value.setIndex(++nStream);
 				it++;
 				break;
 			case ']':
@@ -230,7 +252,7 @@ public:
 	}
 	static void pointExportAux(NodeP* _child,ofstream* out){
 		//		*out<<endl;
-		string s=std::to_string(_child->value.x)+" "+std::to_string(_child->value.y)+" "+std::to_string(_child->value.z)+" 1.000000 0.000000 0.000000\n";
+		string s=std::to_string(_child->value.index)+" "+std::to_string(_child->value.x)+" "+std::to_string(_child->value.y)+" "+std::to_string(_child->value.z)+"\n";
 		*out<<s;
 		if(!_child->children.empty()){
 			typename vector<NodeP*>::iterator it;
@@ -242,7 +264,9 @@ public:
 	static void pointExport(string _fileName,streamTree3D* T){
 		ofstream out( _fileName.c_str(), ios::out );
 		NodeP* Np=T->P;
-		string s=std::to_string(Np->value.x)+" "+std::to_string(Np->value.y)+" "+std::to_string(Np->value.z)+" 1.000000 0.000000 0.000000\n";
+		string s="*NODE\n";
+		out<<s;
+		s=std::to_string(Np->value.index)+" "+std::to_string(Np->value.x)+" "+std::to_string(Np->value.y)+" "+std::to_string(Np->value.z)+"\n";
 		out<<s;
 		if(!Np->children.empty()){
 			typename vector<NodeP*>::iterator it;
@@ -250,14 +274,16 @@ public:
 				pointExportAux(*it,&out);
 			}
 		}
+		s="*END";
+		out<<s;
 		out.close();
 	}
 	static void streamExportAux(NodeS* _child,ofstream* out){
 		//		*out<<endl;
 		if(_child->value.pE!=0x0){
-			string s=std::to_string(_child->value.pI->x)+" "+std::to_string(_child->value.pI->y)+" "+std::to_string(_child->value.pI->z)+" 1.000000 0.000000 0.000000\n";
-			*out<<s;
-			s=std::to_string(_child->value.pE->x)+" "+std::to_string(_child->value.pE->y)+" "+std::to_string(_child->value.pE->z)+" 1.000000 0.000000 0.000000\n";
+			//			string s=std::to_string(_child->value.index)+" "+std::to_string(_child->value.pI->index)+" "+"0 "+std::to_string(_child->value.w)+"\n";
+			//			*out<<s;
+			string s=std::to_string(_child->value.index)+" "+std::to_string(_child->value.pI->index)+" "+std::to_string(_child->value.pE->index)+" "+std::to_string(_child->value.w)+"\n";
 			*out<<s;
 			if(!_child->children.empty()){
 				typename vector<NodeS*>::iterator it;
@@ -270,16 +296,20 @@ public:
 	static void streamExport(string _fileName,streamTree3D* T){
 		ofstream out( _fileName.c_str(), ios::out );
 		NodeS* Ns=T->S;
-		string s=std::to_string(Ns->value.pI->x)+" "+std::to_string(Ns->value.pI->y)+" "+std::to_string(Ns->value.pI->z)+" 1.000000 0.000000 0.000000\n";
+		string s="*ELEMENT_BEAM\n";
 		out<<s;
-		s=std::to_string(Ns->value.pE->x)+" "+std::to_string(Ns->value.pE->y)+" "+std::to_string(Ns->value.pE->z)+" 1.000000 0.000000 0.000000\n";
+		s=std::to_string(Ns->value.index)+" "+std::to_string(Ns->value.pI->index)+" "+std::to_string(Ns->value.pE->index)+" "+std::to_string(Ns->value.w)+"\n";
 		out<<s;
+		//		s=std::to_string(Ns->value.pE->x)+" "+std::to_string(Ns->value.pE->y)+" "+std::to_string(Ns->value.pE->z)+" 1.000000 0.000000 0.000000\n";
+		//		out<<s;
 		if(!Ns->children.empty()){
 			typename vector<NodeS*>::iterator it;
 			for(it=Ns->children.begin();it!=Ns->children.end();it++){
 				streamExportAux(*it,&out);
 			}
 		}
+		s="*END";
+		out<<s;
 		out.close();
 	}
 };
