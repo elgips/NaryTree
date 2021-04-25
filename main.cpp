@@ -7,6 +7,8 @@
 #include "EtzNary.hpp"
 #include "streamTree.hpp"
 #include <cstdio>
+#include <iostream>
+#include <iomanip>
 //typedef node<double> ND;
 
 //ND string2nodes(string _s){
@@ -65,6 +67,10 @@ int main(){
 //	streamLine3D::childStream(&(P1->value),&(S->value),&(S1->value), 0.2);
 //	point3D p=point3D(1,2,3);
 //	streamTree3D T(P,S);
+	  cout.setf(ios::showpos);
+	  cout.setf(ios::scientific);
+	  cout.precision(5); // two digits after decimal point
+	  cout.width(10);    // in a field of 10 characters
 	  std::ifstream ifs("../streamTree3D_withWidth_2_blender/LSYOUT.txt");
 	  std::string s( (std::istreambuf_iterator<char>(ifs) ),
 	                       (std::istreambuf_iterator<char>()    ) );

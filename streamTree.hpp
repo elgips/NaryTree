@@ -9,6 +9,7 @@
 #define STREAMTREE_HPP_
 #include "EtzNary.hpp"
 #include "streamLine3DW.h"
+#include <iomanip>
 #define defD 0.05
 #define PI	3.14
 #define defDeg PI/2.1
@@ -252,8 +253,8 @@ public:
 	}
 	static void pointExportAux(NodeP* _child,ofstream* out){
 		//		*out<<endl;
-		string s=std::to_string(_child->value.index)+" "+std::to_string(_child->value.x)+" "+std::to_string(_child->value.y)+" "+std::to_string(_child->value.z)+"\n";
-		*out<<s;
+		*out<<setw(12)<<_child->value.index<<std::setw(12)<<_child->value.x<<std::setw(12)<<_child->value.y<<std::setw(12)<<_child->value.z<<endl;
+//		*out<<s;
 		if(!_child->children.empty()){
 			typename vector<NodeP*>::iterator it;
 			for(it=_child->children.begin();it!=_child->children.end();it++){
@@ -266,8 +267,8 @@ public:
 		NodeP* Np=T->P;
 		string s="*NODE\n";
 		out<<s;
-		s=std::to_string(Np->value.index)+" "+std::to_string(Np->value.x)+" "+std::to_string(Np->value.y)+" "+std::to_string(Np->value.z)+"\n";
-		out<<s;
+		out<<setw(12)<<Np->value.index<<std::setw(12)<<Np->value.x<<std::setw(12)<<Np->value.y<<std::setw(12)<<Np->value.z<<std::setw(12)<<endl;
+//		out<<s;
 		if(!Np->children.empty()){
 			typename vector<NodeP*>::iterator it;
 			for(it=Np->children.begin();it!=Np->children.end();it++){
@@ -283,8 +284,9 @@ public:
 		if(_child->value.pE!=0x0){
 			//			string s=std::to_string(_child->value.index)+" "+std::to_string(_child->value.pI->index)+" "+"0 "+std::to_string(_child->value.w)+"\n";
 			//			*out<<s;
-			string s=std::to_string(_child->value.index)+" "+std::to_string(_child->value.pI->index)+" "+std::to_string(_child->value.pE->index)+" "+std::to_string(_child->value.w)+"\n";
-			*out<<s;
+//			string s=std::to_string(_child->value.index)+" "+std::to_string(_child->value.pI->index)+" "+std::to_string(_child->value.pE->index)+" "+std::to_string(_child->value.w)+"\n";
+
+			*out<<setw(12)<<_child->value.index<<setw(12)<<_child->value.pI->index<<setw(12)<<_child->value.pE->index<<setw(12)<<_child->value.w<<std::setw(12)<<endl;
 			if(!_child->children.empty()){
 				typename vector<NodeS*>::iterator it;
 				for(it=_child->children.begin();it!=_child->children.end();it++){
@@ -296,10 +298,11 @@ public:
 	static void streamExport(string _fileName,streamTree3D* T){
 		ofstream out( _fileName.c_str(), ios::out );
 		NodeS* Ns=T->S;
-		string s="*ELEMENT_BEAM\n";
-		out<<s;
-		s=std::to_string(Ns->value.index)+" "+std::to_string(Ns->value.pI->index)+" "+std::to_string(Ns->value.pE->index)+" "+std::to_string(Ns->value.w)+"\n";
-		out<<s;
+		string s="*ELEMENT_BEAM";
+		out<<s<<endl;
+//		s=std::to_string(Ns->value.index)+" "+std::to_string(Ns->value.pI->index)+" "+std::to_string(Ns->value.pE->index)+" "+std::to_string(Ns->value.w)+"\n";
+//		out<<s;
+		out<<setw(12)<<Ns->value.index<<setw(12)<<Ns->value.pI->index<<setw(12)<<Ns->value.pE->index<<setw(12)<<Ns->value.w<<std::setw(12)<<endl;
 		//		s=std::to_string(Ns->value.pE->x)+" "+std::to_string(Ns->value.pE->y)+" "+std::to_string(Ns->value.pE->z)+" 1.000000 0.000000 0.000000\n";
 		//		out<<s;
 		if(!Ns->children.empty()){
@@ -312,6 +315,7 @@ public:
 		out<<s;
 		out.close();
 	}
+
 };
 
 
