@@ -33,6 +33,10 @@ public:
 	void rotateStream(double* _M[3][3]);
 	void rotateStreamAndPoints(double* _M[3][3]);
 	void setIndex(long unsigned int _index);
+	void RotH(const double& theta);
+	void RotL(const double& theta);
+	void RotU(const double& theta);
+
 };
 
 

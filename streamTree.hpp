@@ -90,11 +90,11 @@ public:
 	}
 	static streamTree3D* stringTurtling2StreamT(string _s){/*fits for non negative input values in functions*/
 		streamTree3D* ST3D=new streamTree3D;
-		long unsigned int nPoint=1;
-		long unsigned int nStream=1;
+		long unsigned int nPoint=0;
+		long unsigned int nStream=0;
 		NodeP *NPt=NodeP::newNode(point3D(),NULL);
 		NPt->value.setIndex(nPoint);
-		nPoint++;
+//		nPoint++;
 		NodeS *NSt=NodeS::newNode(streamLine3D(&(NPt->value)), NULL);
 		//		NSt->value.setIndex(nStream);
 		//		nStream++;
@@ -146,7 +146,7 @@ public:
 					H=defDeg;
 					it+=1;
 				}
-				NSt->value.updateDirRz(H);
+				NSt->value.RotU(H);
 				break;
 			case '-':
 				if(_s.substr(it).find("-(")==0){
@@ -159,7 +159,7 @@ public:
 					H=defDeg;
 					it+=1;
 				}
-				NSt->value.updateDirRz(-H);
+				NSt->value.RotU(-H);
 				break;
 			case '&':
 				if(_s.substr(it).find("&(")==0){
@@ -172,7 +172,7 @@ public:
 					H=defDeg;
 					it+=1;
 				}
-				NSt->value.updateDirRy(H);
+				NSt->value.RotL(H);
 				break;
 			case '^':
 				if(_s.substr(it).find("^(")==0){
@@ -185,7 +185,7 @@ public:
 					H=-defDeg;
 					it+=1;
 				}
-				NSt->value.updateDirRy(H);
+				NSt->value.RotL(-H);
 				break;
 			case 92:
 				if(_s.substr(it).find("\(")==0){
@@ -198,6 +198,7 @@ public:
 					H=defDeg;
 					it+=1;
 				}
+				NSt->value.RotH(H);
 				break;
 			case '!':
 				if(_s.substr(it).find("!(")==0){
@@ -223,7 +224,7 @@ public:
 					H=-defDeg;
 					it+=1;
 				}
-				NSt->value.updateDirRx(H);
+				NSt->value.RotH(-H);
 				break;
 			case '[':
 				NodeS::appendChild(NSt->parent,NodeS::newNode(NSt->value,NULL));

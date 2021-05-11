@@ -8,9 +8,9 @@
 streamLine3D::streamLine3D(){
 	point3D PI(0,0,0),X(1,0,0),Y(0,1,0),Z(0,0,1);
 	point3D *PI1=&PI,*PE1=0x0;
-	pH=Y;
-	pL=Z;
-	pU=X;
+	pH=X;
+	pL=Y;
+	pU=Z;
 	pI=PI1;
 	pE=PE1;
 	w=1;
@@ -19,9 +19,9 @@ streamLine3D::streamLine3D(){
 streamLine3D::streamLine3D(double _w){
 	point3D PI(0,0,0),X(1,0,0),Y(0,1,0),Z(0,0,1);
 	point3D *PI1=&PI,*PE1=0x0;
-	pH=Y;
-	pL=Z;
-	pU=X;
+	pH=X;
+	pL=Y;
+	pU=Z;
 	pI=PI1;
 	pE=PE1;
 	w=_w;
@@ -39,9 +39,9 @@ streamLine3D::streamLine3D(double _w){
 streamLine3D::streamLine3D(point3D* _pi){
 	point3D X(1,0,0),Y(0,1,0),Z(0,0,1);
 	point3D *PE1=0x0;
-	pH=Y;
-	pL=Z;
-	pU=X;
+	pH=X;
+	pL=Y;
+	pU=Z;
 	pI=_pi;
 	pE=PE1;
 	w=1;
@@ -50,9 +50,9 @@ streamLine3D::streamLine3D(point3D* _pi){
 streamLine3D::streamLine3D(point3D* _pi,double _w){
 	point3D X(1,0,0),Y(0,1,0),Z(0,0,1);
 	point3D *PE1=0x0;
-	pH=Y;
-	pL=Z;
-	pU=X;
+	pH=X;
+	pL=Y;
+	pU=Z;
 	pI=_pi;
 	pE=PE1;
 	w=_w;
@@ -222,8 +222,16 @@ streamLine3D::streamLine3D(point3D *_pi,point3D _pH0,double _w){
 streamLine3D::streamLine3D(point3D *_pi,point3D *_pe){
 	pI=_pi;
 	pE=_pe;
-	point3D X(1,0,0),Y(0,1,0),Z(0,0,1),PH(_pe->x-_pi->x,_pe->y-_pi->y,_pe->z-_pi->z),PL(Y),PU(Z);
+	point3D X(1,0,0),Y(0,1,0),Z(0,0,1),PU(_pe->x-_pi->x,_pe->y-_pi->y,_pe->z-_pi->z),PL(Y),PH(X);
 	vector<point3D> vP;
+	PU.normalize();
+	pU=PU;
+	vP.push_back(PU);
+	PH.gramSh(vP);
+	if(PH.norm()==0){
+		PH=Y;
+		PH.gramSh(vP);
+	}
 	PH.normalize();
 	pH=PH;
 	vP.push_back(PH);
@@ -234,14 +242,6 @@ streamLine3D::streamLine3D(point3D *_pi,point3D *_pe){
 	}
 	PL.normalize();
 	pL=PL;
-	vP.push_back(PL);
-	PU.gramSh(vP);
-	if(PU.norm()==0){
-		PU=X;
-		PU.gramSh(vP);
-	}
-	PU.normalize();
-	pU=PU;
 	w=1.0;
 	index=0;
 
@@ -249,8 +249,16 @@ streamLine3D::streamLine3D(point3D *_pi,point3D *_pe){
 streamLine3D::streamLine3D(point3D *_pi,point3D *_pe,double _w){
 	pI=_pi;
 	pE=_pe;
-	point3D X(1,0,0),Y(0,1,0),Z(0,0,1),PH(_pe->x-_pi->x,_pe->y-_pi->y,_pe->z-_pi->z),PL(Y),PU(Z);
+	point3D X(1,0,0),Y(0,1,0),Z(0,0,1),PU(_pe->x-_pi->x,_pe->y-_pi->y,_pe->z-_pi->z),PL(Y),PH(X);
 	vector<point3D> vP;
+	PU.normalize();
+	pU=PU;
+	vP.push_back(PU);
+	PH.gramSh(vP);
+	if(PH.norm()==0){
+		PH=Y;
+		PH.gramSh(vP);
+	}
 	PH.normalize();
 	pH=PH;
 	vP.push_back(PH);
@@ -261,14 +269,6 @@ streamLine3D::streamLine3D(point3D *_pi,point3D *_pe,double _w){
 	}
 	PL.normalize();
 	pL=PL;
-	vP.push_back(PL);
-	PU.gramSh(vP);
-	if(PU.norm()==0){
-		PU=X;
-		PU.gramSh(vP);
-	}
-	PU.normalize();
-	pU=PU;
 	w=_w;
 	index=0;
 
@@ -335,4 +335,31 @@ void streamLine3D::rotateStreamAndPoints(double* _M[3][3]){//_M is symmetric rot
 }
 void streamLine3D::setIndex(long unsigned int _index){
 	this->index=_index;
+}
+
+void streamLine3D::RotH(const double& theta){
+// point3D pHT(this->pH.x,this->pH.y,this->pH.z);
+ point3D pLT(cos(theta)*this->pL.x+sin(theta)*this->pU.x,cos(theta)*this->pL.y+sin(theta)*this->pU.y,cos(theta)*this->pL.z+sin(theta)*this->pU.z);
+ point3D pUT(-sin(theta)*this->pL.x+cos(theta)*this->pU.x,-sin(theta)*this->pL.y+cos(theta)*this->pU.y,-sin(theta)*this->pL.z+cos(theta)*this->pU.z);
+//this->pH=pHT;
+this->pL=pLT;
+this->pU=pUT;
+}
+
+void streamLine3D::RotL(const double& theta){
+// point3D pLT(this->pL.x,this->pL.y,this->pL.z);
+ point3D pHT(cos(theta)*this->pH.x+sin(theta)*this->pU.x,cos(theta)*this->pH.y+sin(theta)*this->pU.y,cos(theta)*this->pH.z+sin(theta)*this->pU.z);
+ point3D pUT(-sin(theta)*this->pH.x+cos(theta)*this->pU.x,-sin(theta)*this->pH.y+cos(theta)*this->pU.y,-sin(theta)*this->pH.z+cos(theta)*this->pU.z);
+this->pH=pHT;
+//this->pL=pLT;
+this->pU=pUT;
+}
+
+void streamLine3D::RotU(const double& theta){
+// point3D pUT(this->pU.x,this->pU.y,this->pU.z);
+ point3D pHT(cos(theta)*this->pH.x-sin(theta)*this->pL.x,cos(theta)*this->pH.y-sin(theta)*this->pL.y,cos(theta)*this->pH.z-sin(theta)*this->pL.z);
+ point3D pUT(sin(theta)*this->pH.x+cos(theta)*this->pL.x,sin(theta)*this->pH.y+cos(theta)*this->pL.y,sin(theta)*this->pH.z+cos(theta)*this->pL.z);
+this->pH=pHT;
+//this->pL=pLT;
+this->pU=pUT;
 }

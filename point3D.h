@@ -34,6 +34,7 @@ public:
 	void gramSh(vector<point3D> _vp);
 	string point2String();
 	void setIndex(long unsigned int _index);
+	void operator=(const point3D& _p);
 };
 
 

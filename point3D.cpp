@@ -65,9 +65,9 @@ void point3D::normalize(){
 	z=z/nrm;
 }
 void point3D::set(double _x,double _y,double _z){
-x=_x;
-y=_y;
-z=_z;
+	x=_x;
+	y=_y;
+	z=_z;
 }
 double point3D::DotProd(point3D _p){
 	return x*_p.x+y*_p.y+z*_p.z;
@@ -89,11 +89,11 @@ void point3D::gramSh(vector<point3D> _vp){
 		x=x-proj.x;
 		y=y-proj.y;
 		z=z-proj.z;
-//		if(x==0&&y==0&&z==0){
-//#warning "The vectors are linearly dependent" ;
-//		}
-////			terminate();
-//		}
+		//		if(x==0&&y==0&&z==0){
+		//#warning "The vectors are linearly dependent" ;
+		//		}
+		////			terminate();
+		//		}
 		normalize();
 	}
 }
@@ -103,3 +103,10 @@ string point3D::point2String(){
 void point3D::setIndex(long unsigned int _index){
 	this->index=_index;
 }
+void point3D::operator=(const point3D& _p){
+	this->x=_p.x;
+	this->y=_p.y;
+	this->z=_p.z;
+
+}
+
