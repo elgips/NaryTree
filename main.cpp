@@ -81,6 +81,7 @@ int main(){
 	streamTree3D *T1=streamTree3D::stringTurtling2StreamT(s);
 	streamTree3D::streamExport(s1, T1);
 	streamTree3D::pointExport(s2, T1);
+//	cout<< cos(3.14/2)<<endl;
 //	cout <<Q[1];//	float s=10.3;
 //	const char* format="%f\n";
 //	printf(format,s);

@@ -10,9 +10,9 @@
 #include "EtzNary.hpp"
 #include "streamLine3DW.h"
 #include <iomanip>
-#define defD 0.05
-#define PI	3.14
-#define defDeg PI/2.1
+#define defD 0.5
+#define PI	3.1416
+#define defDeg PI/2
 
 typedef node<point3D> NodeP;
 typedef node<streamLine3D> NodeS;
@@ -137,7 +137,7 @@ public:
 				break;
 			case '+':
 				if(_s.substr(it).find("+(")==0){
-					temp=_s.substr(it+3);
+					temp=_s.substr(it+2);
 					it2=temp.find(")");
 					H=std::stod(temp.substr(0,it2));
 					it+=it2;
@@ -150,7 +150,7 @@ public:
 				break;
 			case '-':
 				if(_s.substr(it).find("-(")==0){
-					temp=_s.substr(it+3);
+					temp=_s.substr(it+2);
 					it2=temp.find(")");
 					H=std::stod(temp.substr(0,it2));
 					it+=it2;
@@ -176,7 +176,7 @@ public:
 				break;
 			case '^':
 				if(_s.substr(it).find("^(")==0){
-					temp=_s.substr(it+3);
+					temp=_s.substr(it+2);
 					it2=temp.find(")");
 					H=-std::stod(temp.substr(0,it2));
 					it+=it2;
@@ -188,8 +188,8 @@ public:
 				NSt->value.RotL(-H);
 				break;
 			case 92:
-				if(_s.substr(it).find("\(")==0){
-					temp=_s.substr(it+3);
+				if(_s.substr(it+1).find("\(")==0){
+					temp=_s.substr(it+2);
 					it2=temp.find(")");
 					H=std::stod(temp.substr(0,it2));
 					it+=it2;
@@ -215,7 +215,7 @@ public:
 				break;
 			case '/':
 				if(_s.substr(it).find("/(")==0){
-					temp=_s.substr(it+3);
+					temp=_s.substr(it+2);
 					it2=temp.find(")");
 					H=-std::stod(temp.substr(0,it2));
 					it+=it2;
