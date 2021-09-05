@@ -94,10 +94,18 @@ public:
 		long unsigned int nStream=0;
 		NodeP *NPt=NodeP::newNode(point3D(),NULL);
 		NPt->value.setIndex(nPoint);
-//		nPoint++;
+				nPoint++;
 		NodeS *NSt=NodeS::newNode(streamLine3D(&(NPt->value)), NULL);
-		//		NSt->value.setIndex(nStream);
-		//		nStream++;
+				NSt->value.setIndex(nStream);
+				nStream++;
+
+		NPt->appendChild(NPt, NodeP::newNode(point3D(),NULL));
+		NSt->appendChild(NSt, NodeS::newNode(streamLine3D(),NULL));
+		NPt=NPt->children.back();
+		NPt->value.setIndex(nPoint);
+		NSt=NSt->children.back();
+		NSt->value.setIndex(nStream);
+		NSt->value.pI=&(NPt->value);
 		ST3D->P=NPt;
 		ST3D->S=NSt;
 		//		typename vector<NodeS*>::iterator itS;
@@ -212,6 +220,7 @@ public:
 					it+=1;
 				}
 				NSt->value.w=width;
+				NPt->value.w=width;
 				break;
 			case '/':
 				if(_s.substr(it).find("/(")==0){
@@ -254,8 +263,9 @@ public:
 	}
 	static void pointExportAux(NodeP* _child,ofstream* out){
 		//		*out<<endl;
-		*out<<setw(12)<<_child->value.index<<std::setw(12)<<_child->value.x<<std::setw(12)<<_child->value.y<<std::setw(12)<<_child->value.z<<endl;
-//		*out<<s;
+		//*out<<setw(12)<<_child->value.index<<std::setw(12)<<_child->value.x<<std::setw(12)<<_child->value.y<<std::setw(12)<<_child->value.z<<std::setw(12)<<_child->value.w<<endl;
+		*out<<"*solidspherefull "<<_child->value.x<<" "<<_child->value.y<<" "<<_child->value.z<<" "<<_child->parent->value.w<<"e-2"<<endl;
+		//		*out<<s;
 		if(!_child->children.empty()){
 			typename vector<NodeP*>::iterator it;
 			for(it=_child->children.begin();it!=_child->children.end();it++){
@@ -266,18 +276,19 @@ public:
 	static void pointExport(string _fileName,streamTree3D* T){
 		ofstream out( _fileName.c_str(), ios::out );
 		NodeP* Np=T->P;
-		string s="*NODE\n";
-		out<<s;
-		out<<setw(12)<<Np->value.index<<std::setw(12)<<Np->value.x<<std::setw(12)<<Np->value.y<<std::setw(12)<<Np->value.z<<std::setw(12)<<endl;
-//		out<<s;
+		//		string s="*NODE\n";
+		//		out<<s;
+		//		out<<setw(12)<<Np->value.index<<std::setw(12)<<Np->value.x<<std::setw(12)<<Np->value.y<<std::setw(12)<<Np->value.z<<std::setw(12)<<Np->value.w<<std::setw(12)<<endl;
+		out<<"*solidspherefull "<<Np->value.x<<" "<<Np->value.y<<" "<<Np->value.z<<" "<<Np->value.w<<"e-2"<<endl;
+		//		out<<s;
 		if(!Np->children.empty()){
 			typename vector<NodeP*>::iterator it;
 			for(it=Np->children.begin();it!=Np->children.end();it++){
 				pointExportAux(*it,&out);
 			}
 		}
-		s="*END";
-		out<<s;
+		//		s="*END";
+		//		out<<s;
 		out.close();
 	}
 	static void streamExportAux(NodeS* _child,ofstream* out){
@@ -285,9 +296,10 @@ public:
 		if(_child->value.pE!=0x0){
 			//			string s=std::to_string(_child->value.index)+" "+std::to_string(_child->value.pI->index)+" "+"0 "+std::to_string(_child->value.w)+"\n";
 			//			*out<<s;
-//			string s=std::to_string(_child->value.index)+" "+std::to_string(_child->value.pI->index)+" "+std::to_string(_child->value.pE->index)+" "+std::to_string(_child->value.w)+"\n";
+			//			string s=std::to_string(_child->value.index)+" "+std::to_string(_child->value.pI->index)+" "+std::to_string(_child->value.pE->index)+" "+std::to_string(_child->value.w)+"\n";
 
-			*out<<setw(12)<<_child->value.index<<setw(12)<<_child->value.pI->index<<setw(12)<<_child->value.pE->index<<setw(12)<<_child->value.w<<std::setw(12)<<endl;
+			//			*out<<setw(12)<<_child->value.index<<setw(12)<<_child->value.pI->index<<setw(12)<<_child->value.pE->index<<setw(12)<<_child->value.w<<std::setw(12)<<endl;
+			*out<<"*solidcone "<<_child->value.pI->x<<" "<<_child->value.pI->y<<" "<<_child->value.pI->z<<" "<<_child->value.pL.x<<" "<<_child->value.pL.y<<" "<<_child->value.pL.z<<" "<<_child->value.pH.x<<" "<<_child->value.pH.y<<" "<<_child->value.pH.z<<" "<<_child->value.w<<"e-2 "<<_child->value.w<<"e-2 1 0.0 360.0 "<<_child->value.pE->Distance(*_child->value.pI)<<endl;
 			if(!_child->children.empty()){
 				typename vector<NodeS*>::iterator it;
 				for(it=_child->children.begin();it!=_child->children.end();it++){
@@ -298,12 +310,13 @@ public:
 	}
 	static void streamExport(string _fileName,streamTree3D* T){
 		ofstream out( _fileName.c_str(), ios::out );
-		NodeS* Ns=T->S;
-		string s="*ELEMENT_BEAM";
-		out<<s<<endl;
-//		s=std::to_string(Ns->value.index)+" "+std::to_string(Ns->value.pI->index)+" "+std::to_string(Ns->value.pE->index)+" "+std::to_string(Ns->value.w)+"\n";
-//		out<<s;
-		out<<setw(12)<<Ns->value.index<<setw(12)<<Ns->value.pI->index<<setw(12)<<Ns->value.pE->index<<setw(12)<<Ns->value.w<<std::setw(12)<<endl;
+		NodeS* Ns=T->S->parent;
+		//string s="*ELEMENT_BEAM";
+		//out<<s<<endl;
+		//		s=std::to_string(Ns->value.index)+" "+std::to_string(Ns->value.pI->index)+" "+std::to_string(Ns->value.pE->index)+" "+std::to_string(Ns->value.w)+"\n";
+		//		out<<s;
+		//out<<setw(12)<<Ns->value.index<<setw(12)<<Ns->value.pI->index<<setw(12)<<Ns->value.pE->index<<setw(12)<<Ns->value.w<<std::setw(12)<<endl;
+		//		out<<"*solidcone "<<Ns->value.pI->x<<" "<<Ns->value.pI->y<<" "<<Ns->value.pI->z<<" "<<Ns->value.pL.x<<" "<<Ns->value.pL.y<<" "<<Ns->value.pL.z<<" "<<Ns->value.pH.x<<" "<<Ns->value.pH.y<<" "<<Ns->value.pH.z<<" "<<Ns->value.w<<"e-2 "<<Ns->value.w<<"e-2 1 0.0 360.0 "<<Ns->value.pE->Distance(*Ns->value.pI)<<endl;
 		//		s=std::to_string(Ns->value.pE->x)+" "+std::to_string(Ns->value.pE->y)+" "+std::to_string(Ns->value.pE->z)+" 1.000000 0.000000 0.000000\n";
 		//		out<<s;
 		if(!Ns->children.empty()){
@@ -312,11 +325,47 @@ public:
 				streamExportAux(*it,&out);
 			}
 		}
-		s="*END";
-		out<<s;
+		//		s="*END";
+		//		out<<s;
 		out.close();
 	}
-
+	static void TreeExportAux(NodeS* _childS,point3D* _childP,ofstream* out){
+		*out<<"*solidspherefull "<<_childP->x<<" "<<_childP->y<<" "<<_childP->z<<" "<<_childS->value.w<<"e-2"<<endl;
+		*out<<"*createmark solids 1 1"<<endl;
+		*out<<"*createmark solids 2 2"<<endl;
+		*out<<"*boolean_merge_solids 1 2 14 3"<<endl;
+		if(!_childS->children.empty()){
+			typename vector<NodeS*>::iterator it;
+			for(it=_childS->children.begin();it!=_childS->children.end();it++){
+				if((*it)->value.pE!=0x0){
+					*out<<"*solidcone "<<(*it)->value.pI->x<<" "<<(*it)->value.pI->y<<" "<<(*it)->value.pI->z<<" "<<(*it)->value.pL.x<<" "<<(*it)->value.pL.y<<" "<<(*it)->value.pL.z<<" "<<(*it)->value.pH.x<<" "<<(*it)->value.pH.y<<" "<<(*it)->value.pH.z<<" "<<(*it)->value.w<<"e-2 "<<(*it)->value.w<<"e-2 1 0.0 360.0 "<<(*it)->value.pE->Distance(*(*it)->value.pI)<<endl;
+					*out<<"*createmark solids 1 1"<<endl;
+					*out<<"*createmark solids 2 2"<<endl;
+					*out<<"*boolean_merge_solids 1 2 14 3"<<endl;
+					TreeExportAux(*it,(*it)->value.pE,out);
+				}
+			}
+		}
+	}
+	static void TreeExport(string _fileName,streamTree3D*T){
+		ofstream out( _fileName.c_str(), ios::out );
+		NodeS* Ns=T->S;
+		NodeP* Np=T->P;
+		out<<"*solidspherefull "<<Np->value.x<<" "<<Np->value.y<<" "<<Np->value.z<<" "<<Np->value.w<<"e-2"<<endl;
+		out<<"*collectorcreateonly components "<<std::string(1, 34)<<"newSolids"<<std::string(1, 34)<<" "<<std::string(1, 34)<<std::string(1, 34)<<" 10"<<endl;
+		if(!Np->children.empty()){
+			typename vector<NodeS*>::iterator it;
+			for(it=Ns->parent->children.begin();it!=Ns->parent->children.end();it++){
+				if((*it)->value.pE!=0x0){
+					out<<"*solidcone "<<(*it)->value.pI->x<<" "<<(*it)->value.pI->y<<" "<<(*it)->value.pI->z<<" "<<(*it)->value.pL.x<<" "<<(*it)->value.pL.y<<" "<<(*it)->value.pL.z<<" "<<(*it)->value.pH.x<<" "<<(*it)->value.pH.y<<" "<<(*it)->value.pH.z<<" "<<(*it)->value.w<<"e-2 "<<(*it)->value.w<<"e-2 1 0.0 360.0 "<<(*it)->value.pE->Distance(*(*it)->value.pI)<<endl;
+					out<<"*createmark solids 1 1"<<endl;
+					out<<"*createmark solids 2 2"<<endl;
+					out<<"*boolean_merge_solids 1 2 14 3"<<endl;
+					TreeExportAux(*it,(*it)->value.pE,&out);
+				}
+			}
+		}
+	}
 };
 
 
