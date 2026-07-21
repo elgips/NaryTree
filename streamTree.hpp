@@ -78,9 +78,7 @@ public:
 			NodeS *subS,*Temp;
 			Temp=getStreamNodeFromPointNodeVal(&(_n->value),S);
 			subS=S->copySubTree(Temp);
-			streamTree3D* subTree;
-			subTree->P=subP;
-			subTree->S=subS;
+			streamTree3D* subTree=new streamTree3D(subP,subS);
 			return subTree;
 		}else{
 			invalid_argument("no such point node in the tree");
@@ -111,7 +109,7 @@ public:
 		//		typename vector<NodeS*>::iterator itS;
 		//		typename vector<NodeP*>::iterator itP;
 		size_t it,it2;
-		double D,H,width;//L,U,width;
+		double D=defD,H=defDeg,width=1;//L,U,width;
 		string temp;
 		char x;//xsign;
 		//		point3D 	*Pt,Pt1;

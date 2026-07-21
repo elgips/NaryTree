@@ -10,18 +10,21 @@ point3D::point3D(){
 	x=0.0;
 	y=0.0;
 	z=0.0;
+	w=0.0;
 	index=0;
 }
 point3D::point3D(double _x,double _y,double _z){
 	x=_x;
 	y=_y;
 	z=_z;
+	w=0.0;
 	index=0;
 }
 point3D::point3D(const point3D& _p){
 	x=_p.x;
 	y=_p.y;
 	z=_p.z;
+	w=_p.w;
 	index=0;
 }
 point3D point3D::Rx(double theta){
@@ -72,6 +75,10 @@ void point3D::set(double _x,double _y,double _z){
 double point3D::DotProd(point3D _p){
 	return x*_p.x+y*_p.y+z*_p.z;
 }
+double point3D::Distance(point3D _p){
+	double dx=x-_p.x,dy=y-_p.y,dz=z-_p.z;
+	return sqrt(dx*dx+dy*dy+dz*dz);
+}
 /*project the point on a given normal vector*/
 point3D point3D::projection(point3D _p_hat){
 	double x_p,y_p,z_p,C;
@@ -107,6 +114,7 @@ void point3D::operator=(const point3D& _p){
 	this->x=_p.x;
 	this->y=_p.y;
 	this->z=_p.z;
+	this->w=_p.w;
 
 }
 

@@ -57,7 +57,7 @@ public:
 		if(x){
 			if(!_parent->children.empty()){
 				for(it=_parent->children.begin();(it!=_parent->children.end())&&(!x);it++){
-					x=+isMember(*it,_child);
+					x=x||isMember(*it,_child);
 				}
 			}
 		}
@@ -107,7 +107,7 @@ public:
 		_branch->parent=NULL;
 		typename vector<node<T>*>::iterator it;
 		for(it=parent->children.begin();(it!=parent->children.end())&&(!f);it++){
-			if(&(*it)==_branch){
+			if((*it)==_branch){
 				parent->children.erase(it);
 				f=true;
 			}

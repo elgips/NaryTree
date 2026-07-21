@@ -17,6 +17,7 @@ public:
 	double x;
 	double y;
 	double z;
+	double w;              // width/radius associated with this point (added for streamTree export)
 	long unsigned int index;
 	point3D();
 	point3D(double _x,double _y,double _z);
@@ -29,6 +30,8 @@ public:
 	void normalize();
 	void set(double _x,double _y,double _z);
 	double DotProd(point3D _p);
+	/*Euclidean distance between this point and _p*/
+	double Distance(point3D _p);
 	/*project the point on a given normal vector*/
 	point3D projection(point3D _p_hat);
 	void gramSh(vector<point3D> _vp);

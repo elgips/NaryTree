@@ -6,13 +6,15 @@
  */
 #include "streamLine3DW.h"
 streamLine3D::streamLine3D(){
-	point3D PI(0,0,0),X(1,0,0),Y(0,1,0),Z(0,0,1);
-	point3D *PI1=&PI,*PE1=0x0;
+	// NOTE: pI is left NULL here on purpose. The previous version stored the
+	// address of a local point3D, which dangled as soon as the ctor returned.
+	// Callers (e.g. childStream / stringTurtling2StreamT) assign a real pI.
+	point3D X(1,0,0),Y(0,1,0),Z(0,0,1);
 	pH=X;
 	pL=Y;
 	pU=Z;
-	pI=PI1;
-	pE=PE1;
+	pI=0x0;
+	pE=0x0;
 	w=1;
 	index=0;
 }
